@@ -58,6 +58,7 @@ module.exports = class MdsWindow
         window: bw
         development: global.marp.development
         viewMode: @viewMode
+        presentationMode: false
 
       bw.maximize() if global.marp.config.get 'windowPosition.maximized'
 
@@ -233,6 +234,20 @@ module.exports = class MdsWindow
       @menu.states.theme = theme
       @menu.updateMenu()
 
+    startPresentation: ->
+      @menu.states.presentationMode = true
+      @browserWindow.setFullScreen(true)
+
+    exitPresentation: ->
+      if @menu.states.presentationMode
+        @menu.states.presentationMode = false
+        @browserWindow.setFullScreen(false)
+        @send 'exitPresentation'
+
+    jumpSlide: (forwards) ->
+      if @menu.states.presentationMode
+        @send 'jumpSlide', forwards
+
     unfreeze: ->
       @freeze = false
       @send 'unfreezed'
@@ -249,7 +264,7 @@ module.exports = class MdsWindow
     return '(untitled)' unless @path?
     @path.replace(/\\/g, '/').replace(/.*\//, '')
 
-  getCurrentFile: => 
+  getCurrentFile: =>
     return 'untitled' unless @path?
     @path.replace(/\\/g, '/').replace(/.*\//, '').replace(/\.[^/.]+$/, "")
 
