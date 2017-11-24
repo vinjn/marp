@@ -15,7 +15,6 @@
   "author": "Yuki Hattori",
   "license": "MIT",
   "devDependencies": {
-    "appdmg": "^0.5.2",
     "chokidar": "^1.7.0",
     "coffee-script": "^1",
     "del": "^3.0.0",
