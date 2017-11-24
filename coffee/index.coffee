@@ -38,6 +38,10 @@ class EditorStates
       { label: '&Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' }
       { label: '&Delete', role: 'delete' }
       { label: 'Select &All', accelerator: 'CmdOrCtrl+A', click: (i, w) => @codeMirror.execCommand 'selectAll' if w and !w.mdsWindow.freeze }
+      { type: 'separator' }
+      { label: 'Pre&vious Slide', accelerator: 'Shift+CmdOrCtrl+[', click: (i, w) => @navigateSlide(i, w, false) }
+      { label: '&Next Slide', accelerator: 'Shift+CmdOrCtrl+]', click: (i, w) => @navigateSlide(i, w, true) }
+      { type: 'separator', platform: 'darwin' }
       { label: 'Services', role: 'services', submenu: [], platform: 'darwin' }
     ]
 
@@ -144,6 +148,7 @@ class EditorStates
     idx = if forward then page - 1 else page - 3
     idx = if idx >= @rulers.length then @rulers.length - 1 else idx # prevent overflow
     editorLine = if idx >= 0 then @rulers[idx] else 0  # prevent underflow
+
     @codeMirror.setCursor
       line: editorLine
       ch: 0
@@ -300,6 +305,8 @@ do ->
         .filter("[data-viewmode='#{mode}']").addClass('active')
 
     .on 'editCommand', (command) -> editorStates.codeMirror.execCommand(command)
+
+    .on 'jumpSlide', (forwards) -> editorStates.navigateSlide {}, {}, forwards
 
     .on 'openDevTool', ->
       if editorStates.preview.isDevToolsOpened()
