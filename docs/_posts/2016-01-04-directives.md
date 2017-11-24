@@ -13,7 +13,7 @@ Marp's Markdown has extended directives to affect slides. Insert HTML comment as
 
 ## Pagination
 
-You want pagination? Insert `<!-- page_number: true -->` at the top.
+You want pagination? Insert `<!-- page-number: true -->` at the top.
 
 If you want to exclude the first page number, move the directive to after the first ruler.
 
@@ -23,7 +23,7 @@ If you want to exclude the first page number, move the directive to after the fi
 The page number `1` is not shown.
 
 ---
-<!-- page_number: true -->
+<!-- page-number: true -->
 
 # Second page
 

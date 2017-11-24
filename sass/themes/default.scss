@@ -2,58 +2,57 @@
 @import "../../node_modules/highlight.js/styles/github";
 @import "./markdown";
 
+$bg-color: #fff;
+$text-color: #455a64;
+$highlight-color: #0288d1;
+
+@function em($n, $ref) {
+  @return ($n / $ref) + em;
+}
+
+@function slide-font-size($n, $ref) {
+  @return ((1 / $ref) * $n) + em;
+}
+
 @include body-slide-mode {
   font-size: 91.25%;
 
-  .slide_wrapper > .slide {
-    padding: 0 78.5px;
-    justify-content: center;
+  .slide_wrapper {
+    > .slide {
+      padding: 0 78.5px;
+      justify-content: center;
+      padding: calc(0.1px * var(--slide-height)) calc(0.08px * var(--slide-width));
+    }
+    &.only-headings, &.only-blockquotes {
+      > .slide { justify-content: center; }
+    }
+    &.only-headings {
+      h1, h2, h3, h4, h5, h6 { text-align: center; }
+    }
   }
 
-  .slide_page {
-    font-size: 24px;
-    color: #777;
-  }
-
-  .slide_footer {
+  .slide_footer, .slide_page {
     opacity: 0.75;
-    font-size: 18px;
-    color: #666;
+    user-select: none;
   }
+
+  .slide_page { font-size: 14px; color: #777; }
+  .slide_footer { font-size: 18px; color: #666; }
 
   .markdown-body {
-    font-size: 28px;
-
-    h1 {
-      font-size: 1.6em;
-      color: #246;
-      border-bottom: none;
-    }
-
-    h2 {
-      font-size: 1.3em;
-      border-bottom: none;
-    }
-
-    h3 {
-      font-size: 1.1em;
-    }
-
-    h4 {
-      font-size: 1.05em;
-    }
-
-    h5 {
-      font-size: 1em;
-    }
-
-    h6 {
-      font-size: 0.9em;
-    }
-
-    pre {
-      border: 1px solid #999;
-      line-height: 1.15;
+    font-size: 29px;
+    font-family: PingFangSC-Light,Helvetica Neue,Helvetica,Microsoft Yahei,Arial,Hiragino Sans GB,tahoma,SimSun,sans-serif;
+    .slide_inner {
+      $slide-font-size: 0.78em;
+      font-size: $slide-font-size;
+      h1, h2, h3, h4, h5, h6 { margin-bottom: .70967em; }
+      h1 { font-size: slide-font-size(1.6em, $slide-font-size); border-bottom: none; color: #246; }
+      h2 { font-size: slide-font-size(1.3em, $slide-font-size); border-bottom: none; color: #246; }
+      h3 { font-size: slide-font-size(1.1em, $slide-font-size); }
+      h4 { font-size: slide-font-size(1.05em, $slide-font-size); }
+      h5 { font-size: slide-font-size(1em, $slide-font-size); }
+      h6 { font-size: slide-font-size(0.9em, $slide-font-size); }
+      pre { line-height: 1.15; }
     }
   }
 }

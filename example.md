@@ -111,16 +111,16 @@ It apply the latest value if you write multiple same Global Directives.
 The page directive would apply to the  **current page and the following pages**.
 You should insert it *at the top* to apply it to all slides.
 
-### `page_number`
+### `page-number`
 
 Set `true` to show page number on slides. *See lower right!*
 
 ```html
-<!-- page_number: true -->
+<!-- page-number: true -->
 ```
 
 <!--
-page_number: true
+page-number: true
 
 Example is here. Pagination starts from this page.
 If you use multi-line comment, directives should write to each new lines.
@@ -174,12 +174,12 @@ Pre-renders a slide, which can prevent issues with very large background images.
 Page directive can be selectively applied to the current slide by prefixing the page directive with `*`.
 
 ```
-<!-- *page_number: false -->
+<!-- *page-number: false -->
 <!-- *template: invert -->
 ```
 
 <!--
-*page_number: false
+*page-number: false
 
 Example is here.
 Page number is not shown in current page, but it's shown on later pages.

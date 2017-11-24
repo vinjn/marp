@@ -8,7 +8,7 @@ MdsMdSetting = require './mds_md_setting'
 
 module.exports = class MdsMarkdown
   @slideTagOpen:  (page) -> '<div class="slide_wrapper" id="' + page + '"><div class="slide"><div class="slide_bg"></div><div class="slide_inner">'
-  @slideTagClose: (page) -> '</div><footer class="slide_footer"></footer><span class="slide_page" data-page="' + page + '">' + page + '</span></div></div>'
+  @slideTagClose: (page) -> '</div><footer class="slide_footer"></footer><span class="slide_page" data-page="' + page + '">-' + page + '-</span></div></div>'
 
   @highlighter: (code, lang) ->
     if lang?
@@ -68,16 +68,19 @@ module.exports = class MdsMarkdown
           if m = opt.match(/^(\d+(?:\.\d+)?)%$/)
             $(@).css('zoom', parseFloat(m[1]) / 100.0)
 
+
       mdElm
         .children('.slide_wrapper')
         .each ->
           $t = $(@)
 
           # Page directives for themes
-          page = $t[0].id
-          for prop, val of md.settings.getAt(+page, false)
-            $t.attr("data-#{prop}", val)
-            $t.find('footer.slide_footer:last').text(val) if prop == 'footer'
+          page = +($t[0].id)
+          for prop, val of md.settings.getAt(page, true)
+            $t.attr("data-#{prop}", val) # Buitin with page configs by dataset
+            $t.find('footer.slide_footer:last').html(val) if prop is 'footer'
+
+          return if not md.settings.get(page, 'auto-justify', true, true)
 
           # Detect "only-***" elements
           inner = $t.find('.slide > .slide_inner')
@@ -97,9 +100,10 @@ module.exports = class MdsMarkdown
   twemojiOpts: {}
 
   constructor: (settings) ->
-    opts         = extend({}, MdsMarkdown.default.options, settings?.options || {})
-    plugins      = extend({}, MdsMarkdown.default.plugins, settings?.plugins || {})
-    @twemojiOpts = extend({}, MdsMarkdown.default.twemoji, settings?.twemoji || {})
+    defaults     = MdsMarkdown.default
+    opts         = extend({}, defaults.options, settings?.options || {})
+    plugins      = extend({}, defaults.plugins, settings?.plugins || {})
+    @twemojiOpts = extend({}, defaults.twemoji, settings?.twemoji || {})
     @afterRender = settings?.afterRender || null
     @markdown    = MdsMarkdown.createMarkdownIt.call(@, opts, plugins)
     @afterCreate()
@@ -155,15 +159,15 @@ module.exports = class MdsMarkdown
 
     html_block: (tokens, idx, options, env, self) ->
       {content} = tokens[idx]
-      return if content.substring(0, 3) isnt '<!-'
+      return if content.substring(0, 4) isnt '<!--'
 
       if matched = /^(<!-{2,}\s*)([\s\S]*?)\s*-{2,}>$/m.exec(content)
         spaceLines = matched[1].split("\n")
         lineIndex  = tokens[idx].map[0] + spaceLines.length - 1
         startFrom  = spaceLines[spaceLines.length - 1].length
 
-        for mathcedLine in matched[2].split("\n")
-          parsed = /^(\s*)(([\$\*]?)(\w+)\s*:\s*(.*))\s*$/.exec(mathcedLine)
+        for mathcedLine in matched[2].split('\n')
+          parsed = /^(\s*)(([\$\*]?)([-\w]+)\s*:\s*(.*))\s*$/.exec(mathcedLine)
 
           if parsed
             startFrom += parsed[1].length

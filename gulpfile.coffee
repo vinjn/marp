@@ -60,13 +60,15 @@ gulp.task 'clean:releases', -> del ['releases/**/*', 'releases']
 gulp.task 'compile', ['compile:coffee', 'compile:sass']
 gulp.task 'compile:production', ['compile:coffee:production', 'compile:sass:production']
 
+gulp.task 'watch', ->
+  gulp.watch '{coffee,sass}/**/*', ['compile'], (event) ->
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
+
 gulp.task 'compile:coffee', ->
   gulp.src 'coffee/**/*.coffee'
     .pipe $.plumber()
     .pipe $.sourcemaps.init()
-    .pipe $.coffee
-      bare: true
-    .pipe $.uglify()
+    .pipe $.coffee()
     .pipe $.sourcemaps.write()
     .pipe gulp.dest('js')
 
@@ -82,8 +84,7 @@ gulp.task 'compile:sass', ->
 
 gulp.task 'compile:coffee:production', ['clean:js'], ->
   gulp.src 'coffee/**/*.coffee'
-    .pipe $.coffee
-      bare: true
+    .pipe $.coffee()
     .pipe $.uglify()
     .pipe gulp.dest('js')
 
@@ -122,11 +123,13 @@ gulp.task 'package:win32', (done) ->
     arch: 'ia32,x64'
     icon: Path.join(__dirname, 'resources/windows/marp.ico')
   }, done
+
 gulp.task 'package:linux', (done) ->
   packageElectron {
     platform: 'linux'
     arch: 'ia32,x64'
   }, done
+
 gulp.task 'package:darwin', (done) ->
   packageElectron {
     platform: 'darwin'
