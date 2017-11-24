@@ -12,7 +12,6 @@
   body.slide-view, body.to-pdf {
     @content;
   }
-
   @media print {
     body {
       @content;
@@ -33,7 +32,7 @@
 :root {
   --slide-width: 1024;
   --slide-height: 768;
-  --preview-margin: 20;
+  --preview-margin: 10;
 }
 
 $slideWidthPx: calc(1px * var(--slide-width));
@@ -51,6 +50,7 @@ html, body {
 
 body {
   margin: 0;
+  font: 12px/1.5 PingFangSC-Light,Helvetica Neue,Helvetica,Microsoft Yahei,Arial,Hiragino Sans GB,tahoma,SimSun,sans-serif;
 }
 
 img.emoji {
@@ -73,6 +73,7 @@ img.emoji {
   #container {
     padding: 30px 20px;
   }
+  .slide_footer { display: none; }
 }
 
 
@@ -129,7 +130,7 @@ img.emoji {
       pointer-events: none;
     }
 
-    &[data-page_number="true"] {
+    &[data-page-number="true"] {
       .slide_page {
         display: block;
       }

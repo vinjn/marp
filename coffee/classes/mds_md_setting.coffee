@@ -1,9 +1,62 @@
-extend  = require 'extend'
 path    = require 'path'
+extend  = Object.assign
+
+DuckTypes =
+  size: (v) ->
+    ret = {}
+    cmd = "#{v}".toLowerCase()
+
+    if cmd.startsWith('4:3')
+      ret = { width: 1024, height: 768 }
+    else if cmd.startsWith('16:9')
+      ret = { width: 1366, height: 768 }
+    else if cmd.startsWith('a0')
+      ret = { width: '1189mm', height: '841mm' }
+    else if cmd.startsWith('a1')
+      ret = { width: '841mm', height: '594mm' }
+    else if cmd.startsWith('a2')
+      ret = { width: '594mm', height: '420mm' }
+    else if cmd.startsWith('a3')
+      ret = { width: '420mm', height: '297mm' }
+    else if cmd.startsWith('a4')
+      ret = { width: '297mm', height: '210mm' }
+    else if cmd.startsWith('a5')
+      ret = { width: '210mm', height: '148mm' }
+    else if cmd.startsWith('a6')
+      ret = { width: '148mm', height: '105mm' }
+    else if cmd.startsWith('a7')
+      ret = { width: '105mm', height: '74mm' }
+    else if cmd.startsWith('a8')
+      ret = { width: '74mm', height: '52mm' }
+    else if cmd.startsWith('b0')
+      ret = { width: '1456mm', height: '1030mm' }
+    else if cmd.startsWith('b1')
+      ret = { width: '1030mm', height: '728mm' }
+    else if cmd.startsWith('b2')
+      ret = { width: '728mm', height: '515mm' }
+    else if cmd.startsWith('b3')
+      ret = { width: '515mm', height: '364mm' }
+    else if cmd.startsWith('b4')
+      ret = { width: '364mm', height: '257mm' }
+    else if cmd.startsWith('b5')
+      ret = { width: '257mm', height: '182mm' }
+    else if cmd.startsWith('b6')
+      ret = { width: '182mm', height: '128mm' }
+    else if cmd.startsWith('b7')
+      ret = { width: '128mm', height: '91mm' }
+    else if cmd.startsWith('b8')
+      ret = { width: '91mm', height: '64mm' }
+
+    if Object.keys(ret).length > 0 && cmd.endsWith('-portrait')
+      tmp = ret.width
+      ret.width = ret.height
+      ret.height = tmp
+
+    ret
 
 module.exports = class MdsMdSetting
   @generalTransfomer:
-    bool: (v) -> v is 'true'
+    bool: (v) -> String(v) in ['true', 'yes', 'on', '1']
     unit: (v) ->
       val = undefined
 
@@ -23,83 +76,38 @@ module.exports = class MdsMdSetting
 
       Math.floor(val) || undefined
 
+    color: (v) ->
+      return if v? then v else null
+
   @transformers:
-    page_number: MdsMdSetting.generalTransfomer.bool
-    width: MdsMdSetting.generalTransfomer.unit
-    height: MdsMdSetting.generalTransfomer.unit
-    theme: (v) ->
+    'page-number': MdsMdSetting.generalTransfomer.bool
+    'auto-justify': MdsMdSetting.generalTransfomer.bool
+    'justify-content': MdsMdSetting.generalTransfomer.bool
+    'background-color': MdsMdSetting.generalTransfomer.color
+    'text-align': (v) ->
+      if v in ['left', 'center', 'right'] then v else null
+    'width': MdsMdSetting.generalTransfomer.unit
+    'height': MdsMdSetting.generalTransfomer.unit
+    'theme': (v) ->
       basename = path.basename(v)
-      return if basename in ['default', 'gaia'] then "css/themes/#{basename}.css" else null
-    template: (v) -> v
-    footer: (v) -> v
-    prerender: MdsMdSetting.generalTransfomer.bool
+      if basename in ['default', 'gaia'] then "css/themes/#{basename}.css" else null
+    'template': (v) -> v
+    'footer': (v) -> v
+    'prerender': MdsMdSetting.generalTransfomer.bool
 
   @findTransformer: (prop) =>
     for transformerProp, transformer of MdsMdSetting.transformers
       return transformer if prop is transformerProp
     null
 
-  @duckTypes:
-    size: (v) ->
-      ret = {}
-      cmd = "#{v}".toLowerCase()
-
-      if cmd.startsWith('4:3')
-        ret = { width: 1024, height: 768 }
-      else if cmd.startsWith('16:9')
-        ret = { width: 1366, height: 768 }
-      else if cmd.startsWith('a0')
-        ret = { width: '1189mm', height: '841mm' }
-      else if cmd.startsWith('a1')
-        ret = { width: '841mm', height: '594mm' }
-      else if cmd.startsWith('a2')
-        ret = { width: '594mm', height: '420mm' }
-      else if cmd.startsWith('a3')
-        ret = { width: '420mm', height: '297mm' }
-      else if cmd.startsWith('a4')
-        ret = { width: '297mm', height: '210mm' }
-      else if cmd.startsWith('a5')
-        ret = { width: '210mm', height: '148mm' }
-      else if cmd.startsWith('a6')
-        ret = { width: '148mm', height: '105mm' }
-      else if cmd.startsWith('a7')
-        ret = { width: '105mm', height: '74mm' }
-      else if cmd.startsWith('a8')
-        ret = { width: '74mm', height: '52mm' }
-      else if cmd.startsWith('b0')
-        ret = { width: '1456mm', height: '1030mm' }
-      else if cmd.startsWith('b1')
-        ret = { width: '1030mm', height: '728mm' }
-      else if cmd.startsWith('b2')
-        ret = { width: '728mm', height: '515mm' }
-      else if cmd.startsWith('b3')
-        ret = { width: '515mm', height: '364mm' }
-      else if cmd.startsWith('b4')
-        ret = { width: '364mm', height: '257mm' }
-      else if cmd.startsWith('b5')
-        ret = { width: '257mm', height: '182mm' }
-      else if cmd.startsWith('b6')
-        ret = { width: '182mm', height: '128mm' }
-      else if cmd.startsWith('b7')
-        ret = { width: '128mm', height: '91mm' }
-      else if cmd.startsWith('b8')
-        ret = { width: '91mm', height: '64mm' }
-
-      if Object.keys(ret).length > 0 && cmd.endsWith('-portrait')
-        tmp = ret.width
-        ret.width = ret.height
-        ret.height = tmp
-
-      ret
-
   @findDuckTypes: (prop) =>
-    for duckTypeProp, convertFunc of MdsMdSetting.duckTypes
+    for duckTypeProp, convertFunc of DuckTypes
       return convertFunc if prop is duckTypeProp
     null
 
   @validProps:
+    page: Object.keys(@transformers)
     global: ['width', 'height', 'size', 'theme']
-    page:   ['page_number', 'template', 'footer', 'prerender']
 
   @isValidProp: (page, prop) =>
     target = if page > 0 then 'page' else 'global'
@@ -108,7 +116,7 @@ module.exports = class MdsMdSetting
   constructor: () ->
     @_settings = []
 
-  set: (fromPage, prop, value, noFollowing = false) =>
+  set: (fromPage, prop, value, following = false) =>
     return false unless MdsMdSetting.isValidProp(fromPage, prop)
 
     if duckType = MdsMdSetting.findDuckTypes(prop)
@@ -120,21 +128,34 @@ module.exports = class MdsMdSetting
     for targetProp, targetValue of target
       if transformer = MdsMdSetting.findTransformer(targetProp)
         transformedValue = transformer(targetValue)
+      else
+        transformedValue = targetValue
 
-        if (idx = @_findSettingIdx fromPage, targetProp, !!noFollowing)?
-          @_settings[idx].value = transformedValue
-        else
-          @_settings.push
-            page:        fromPage
-            property:    targetProp
-            value:       transformedValue
-            noFollowing: !!noFollowing
+      continue if !transformedValue?
 
-  setGlobal: (prop, value) => @set 0, prop, value
+      if (idx = @_findSettingIdx fromPage, targetProp, !following)?
+        @_settings[idx].value = transformedValue
+      else
+        @_settings.push
+          page:        fromPage
+          property:    targetProp
+          value:       transformedValue
+          noFollowing: !following
 
-  get: (page, prop, withGlobal = true) => @getAt(page, withGlobal)[prop]
+  setGlobal: (prop, value) => @set 0, prop, value, false
+
+  ###
+  # Get a specific config value by property name
+  ###
+  get: (page, prop, withGlobal = true, defval) =>
+    v = @getAt(page, withGlobal)[prop]
+    v ?= defval
+
   getGlobal: (prop) => @getAtGlobal()[prop]
 
+  ###
+  # Get all of configure of a specific page
+  ###
   getAt: (page, withGlobal = true) =>
     props = (obj for obj in @_settings when obj.page <= page && (withGlobal || obj.page > 0))
     props.sort (a, b) -> a.page - b.page

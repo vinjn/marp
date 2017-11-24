@@ -54,3 +54,34 @@ app.on 'ready', ->
       MdsWindow.loadFromFile opts.file, null
     else
       new MdsWindow
+
+if global.marp.development
+  chokidar = require 'chokidar'
+  browserWindows = []
+
+  # https://github.com/yan-foto/electron-reload/blob/master/main.js
+  app.on 'browser-window-created', (e, bw) ->
+    browserWindows.push bw
+
+    # Remove closed windows from list of maintained items
+    bw.on 'closed', () ->
+      i = browserWindows.indexOf bw
+      browserWindows.splice(i, 1)
+
+  ###
+  # Callback function to be executed when any of the files
+  # defined in given 'glob' is changed.
+  ###
+  onChange = (args...) ->
+    browserWindows.forEach (bw) ->
+      bw.webContents.reloadIgnoringCache()
+
+  # Watch everything but the node_modules folder and main file
+  # main file changes are only effective if hard reset is possible
+  opts = Object.assign({
+    ignored: [
+      /node_modules|[/\\]\./
+    ]})
+
+  watcher = chokidar.watch '/Users/allex/dev/tools/marp/js/', opts
+  watcher.on('change', onChange)
