@@ -330,8 +330,6 @@ do ->
       $('#md-pane').removeClass('presentation')
       $('#footer').removeClass('presentation')
 
-    .on 'jumpSlide', (forwards) -> editorStates.navigateSlide {}, {}, forwards
-
   # Initialize
   editorStates.codeMirror.focus()
   editorStates.refreshPage()
