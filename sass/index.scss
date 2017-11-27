@@ -148,6 +148,11 @@ body.exporting-pdf {
   }
 }
 
-.presentation {
-  display: none
+body.presentation {
+  .toolbar-footer,
+  .pane-splitter,
+  #footer,
+  #md-pane {
+    display: none
+  }
 }

@@ -173,22 +173,28 @@ do ->
   $('.viewmode-btn[data-viewmode]').click -> MdsRenderer.sendToMain('viewMode', $(this).attr('data-viewmode'))
 
   $('body').keydown (event) ->
-    forwards = switch event.which
-      when 13 # enter
-        true
-      when 38 # up
-        false
-      when 39 # right
-        true
-      when 37 # left
-        false
-      when 40 # down
-        true
-      when 27 # escape
+    keyCode = event.which # normalized from e.keyCode, e.charCode
+
+    forwards = switch
+      when keyCode in [
+        13 # enter
+        39 # right
+        40 # down
+        74 # j
+        76 # l
+      ] then true
+      when keyCode in [
+        37 # left
+        38 # up
+        72 # h
+        75 # k
+      ] then false
+      when keyCode is 27 # escape
         MdsRenderer.sendToMain('exitPresentation')
         null
       else
         null
+
     if forwards != null
       MdsRenderer.sendToMain('jumpSlide', forwards)
 
@@ -322,13 +328,11 @@ do ->
 
     .on 'startPresentation', ->
       new Notification('Press escape key to exit presentation mode.')
-      $('#md-pane').addClass('presentation')
-      $('#footer').addClass('presentation')
+      $('body').addClass('presentation')
       MdsRenderer.sendToMain 'startPresentation'
 
     .on 'exitPresentation', ->
-      $('#md-pane').removeClass('presentation')
-      $('#footer').removeClass('presentation')
+      $('body').removeClass('presentation')
 
   # Initialize
   editorStates.codeMirror.focus()
