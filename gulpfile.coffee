@@ -37,6 +37,8 @@ packageElectron = (opts = {}, done) ->
 
     done() if done?
 
+  return
+
 globFolders = (pattern, func, callback) ->
   doneTasks = 0
   g = new (require("glob").Glob) pattern, (err, pathes) ->
@@ -49,6 +51,9 @@ globFolders = (pattern, func, callback) ->
       func(path, done) for path in pathes
     else
       callback()
+
+  # https://github.com/SBoudrias/gulp-istanbul/issues/22
+  return
 
 gulp.task 'clean', ['clean:js', 'clean:css', 'clean:dist', 'clean:packages']
 gulp.task 'clean:js', -> del ['js/**/*', 'js']
