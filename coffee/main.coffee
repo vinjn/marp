@@ -8,6 +8,9 @@ MdsWindow = require './classes/mds_window'
 MainMenu  = require './classes/mds_main_menu'
 {exist}   = require './classes/mds_file'
 
+# app root dir
+appBaseDir = Path.dirname(__dirname)
+
 # Initialize config
 global.marp.config.initialize()
 
@@ -41,7 +44,6 @@ app.on 'activate', (e, hasVisibleWindows) ->
 
 app.on 'open-file', (e, path) ->
   e.preventDefault()
-
   opts.fileOpened = true
   MdsWindow.loadFromFile path, null
 
@@ -83,5 +85,5 @@ if global.marp.development
       /node_modules|[/\\]\./
     ]})
 
-  watcher = chokidar.watch '/Users/allex/dev/tools/marp/js/', opts
+  watcher = chokidar.watch Path.resolve(appBaseDir, 'js'), opts
   watcher.on('change', onChange)

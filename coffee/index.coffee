@@ -1,16 +1,16 @@
 {shell, webFrame} = require 'electron'
 MdsMenu           = require './js/classes/mds_menu'
 clsMdsRenderer    = require './js/classes/mds_renderer'
-MdsRenderer       = new clsMdsRenderer
-MdsRenderer.requestAccept()
-
-webFrame.setZoomLevelLimits(1, 1)
 
 CodeMirror = require 'codemirror'
 require 'codemirror/mode/xml/xml'
 require 'codemirror/mode/markdown/markdown'
 require 'codemirror/mode/gfm/gfm'
 require 'codemirror/addon/edit/continuelist'
+
+MdsRenderer = new clsMdsRenderer
+MdsRenderer.requestAccept()
+webFrame.setZoomLevelLimits(1, 1)
 
 class EditorStates
   rulers: []
@@ -155,13 +155,21 @@ class EditorStates
 
 loadingState = 'loading'
 
+startPresentation = () ->
+  new Notification('Press escape key to exit presentation mode.')
+  $('body').addClass('presentation')
+  MdsRenderer.sendToMain 'startPresentation'
+
+exitPresentation = () ->
+  $('body').removeClass('presentation')
+
 do ->
   editorStates = new EditorStates(
     CodeMirror.fromTextArea($('#editor')[0],
       mode: 'gfm'
       theme: 'marp'
       lineWrapping: true
-      lineNumbers: false
+      lineNumbers: true
       dragDrop: false
       extraKeys:
         Enter: 'newlineAndIndentContinueMarkdownList'
@@ -190,7 +198,10 @@ do ->
         75 # k
       ] then false
       when keyCode is 27 # escape
-        MdsRenderer.sendToMain('exitPresentation')
+        MdsRenderer.sendToMain 'exitPresentation'
+        null
+      when keyCode is 32 and event.target.nodeName is 'WEBVIEW' # space
+        startPresentation()
         null
       else
         null
@@ -260,7 +271,6 @@ do ->
     .on 'publishPdf', (fname) ->
       editorStates.codeMirror.getInputField().blur()
       $('body').addClass 'exporting-pdf'
-
       editorStates.preview.send 'requestPdfOptions', { filename: fname }
 
     .on 'responsePdfOptions', (opts) ->
@@ -325,14 +335,8 @@ do ->
     .on 'setTheme', (theme) -> editorStates.updateGlobalSetting '$theme', theme
     .on 'themeChanged', (theme) -> MdsRenderer.sendToMain 'themeChanged', theme
     .on 'resourceState', (state) -> loadingState = state
-
-    .on 'startPresentation', ->
-      new Notification('Press escape key to exit presentation mode.')
-      $('body').addClass('presentation')
-      MdsRenderer.sendToMain 'startPresentation'
-
-    .on 'exitPresentation', ->
-      $('body').removeClass('presentation')
+    .on 'startPresentation', startPresentation
+    .on 'exitPresentation', exitPresentation
 
   # Initialize
   editorStates.codeMirror.focus()
