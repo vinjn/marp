@@ -175,18 +175,17 @@ module.exports = class MdsMainMenu
             {
               label: 'Pre&vious Slide'
               enabled: @window?
-              accelerator: 'CmdOrCtrl+Up'
+              accelerator: 'PageUp'
               click: (i, w) => @window.mdsWindow.send 'jumpSlide', false unless @window.mdsWindow.freeze
             }
             {
               label: '&Next Slide'
               enabled: @window?
-              accelerator: 'CmdOrCtrl+Down'
+              accelerator: 'PageDown'
               click: (i, w) => @window.mdsWindow.send 'jumpSlide', true unless @window.mdsWindow.freeze
             }
             {
               label: '&Start Presentation'
-              accelerator: 'Space'
               click: =>
                 @window.mdsWindow.send 'startPresentation'
             }
