@@ -125,7 +125,7 @@ gulp.task 'dist', ['clean:dist'], ->
 gulp.task 'package', ['clean:packages', 'dist'], (done) ->
   runSequence 'package:win32', 'package:darwin', 'package:linux', done
 
-gulp.task 'package:win32', ->
+gulp.task 'package:win32', (done) ->
   packageElectron {
     platform: 'win32'
     arch: 'ia32,x64'
