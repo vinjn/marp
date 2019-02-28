@@ -116,7 +116,7 @@ module.exports = class MdsMdSetting
   constructor: () ->
     @_settings = []
 
-  set: (fromPage, prop, value, following = false) =>
+  set: (fromPage, prop, value, following = true) =>
     return false unless MdsMdSetting.isValidProp(fromPage, prop)
 
     if duckType = MdsMdSetting.findDuckTypes(prop)
@@ -133,14 +133,14 @@ module.exports = class MdsMdSetting
 
       continue if !transformedValue?
 
-      if (idx = @_findSettingIdx fromPage, targetProp, !following)?
+      if (idx = @_findSettingIdx fromPage, targetProp, following)?
         @_settings[idx].value = transformedValue
       else
         @_settings.push
           page:        fromPage
           property:    targetProp
           value:       transformedValue
-          noFollowing: !following
+          noFollowing: following
 
   setGlobal: (prop, value) => @set 0, prop, value, false
 
