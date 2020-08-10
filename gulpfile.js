@@ -159,7 +159,7 @@ gulp.task("package:win32", (done) =>
   packageElectron(
     {
       platform: "win32",
-      arch: "ia32,x64",
+      arch: "x64",
       icon: Path.join(__dirname, "resources/windows/marp.ico"),
     },
     done
@@ -170,7 +170,7 @@ gulp.task("package:linux", (done) =>
   packageElectron(
     {
       platform: "linux",
-      arch: "ia32,x64",
+      arch: "x64",
     },
     done
   )

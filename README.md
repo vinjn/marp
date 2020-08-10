@@ -14,7 +14,7 @@ Marp
 
 ### Install
 
-:arrow_forward: **[Download latest archives from release page.](https://github.com/yhatt/marp/releases)**
+:arrow_forward: **[Download latest archives from release page.](https://github.com/vinjn/marp/releases)**
 
 - **Windows**: Unzip `*.*.*-Marp-win32-[arch].zip` and run `Marp.exe`.
 - **macOS**: Mount `*.*.*-Marp-darwin-x64.dmg`, D&D `Marp` to `Applications` and run it from Applications folder / Launchpad. Or use [Homebrew](http://brew.sh) [Cask](https://caskroom.github.io): `brew cask install marp`
@@ -22,7 +22,7 @@ Marp
 
 ### How to write slides?
 
-Split slides by horizontal ruler `---`. It's very simple. Please refer to [example.md](https://raw.githubusercontent.com/yhatt/marp/master/example.md).
+Split slides by horizontal ruler `---`. It's very simple. Please refer to [example.md](https://raw.githubusercontent.com/vinjn/marp/master/example.md).
 
 ```md
 # Slide 1
@@ -69,6 +69,7 @@ To build for Darwin is only supported in macOS.
 
 ## Licenses
 
+Copyright &copy; 2020-2021 [Vinjn Zhang](https://github.com/vinjn).
 Copyright &copy; 2016-2018 [Yuki Hattori](https://github.com/yhatt).
 
 This software released under the [MIT License](https://github.com/yhatt/marp/blob/master/LICENSE).
