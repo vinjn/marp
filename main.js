@@ -1,3 +1,3 @@
-'use strict';
+"use strict";
 
-require('./js/main');
+require("./js/main");
