@@ -219,7 +219,11 @@ gulp.task("build:darwin", (done) =>
   runSequence("compile:production", "dist", "package:darwin", done)
 );
 
-gulp.task("archive", ["archive:win32", "archive:darwin", "archive:linux"]);
+if (false) {
+  gulp.task("archive", ["archive:win32", "archive:darwin", "archive:linux"]);
+} else {
+  gulp.task("archive", ["archive:win32"]);
+}
 
 gulp.task("archive:win32", (done) =>
   globFolders(
